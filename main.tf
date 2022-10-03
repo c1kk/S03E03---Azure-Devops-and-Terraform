@@ -1,7 +1,7 @@
-# provider "azurerm" {
-#     version = "2.5.0"
-#     features {}
-# }
+provider "azurerm" {
+    version = "3.0.1"
+    features {}
+}
 
 # terraform {
 #     backend "azurerm" {
@@ -13,31 +13,29 @@
 # }
 
 
+resource "azurerm_resource_group" "terra_test" {
+  name = "gr_terra"
+  location = "East US"
+}
 
+resource "azurerm_container_group" "terra_test_2" {
+  name                      = "weatherapi"
+  location                  = azurerm_resource_group.terra_test.location
+  resource_group_name       = azurerm_resource_group.terra_test.name
 
-# resource "azurerm_resource_group" "tf_test" {
-#   name = "tfmainrg"
-#   location = "Australia East"
-# }
+  ip_address_type     = "Public"
+  dns_name_label      = "caokhoanguyen1"
+  os_type             = "Linux"
 
-# resource "azurerm_container_group" "tfcg_test" {
-#   name                      = "weatherapi"
-#   location                  = azurerm_resource_group.tf_test.location
-#   resource_group_name       = azurerm_resource_group.tf_test.name
+  container {
+      name            = "weatherapi"
+      image           = "caokhoanguyen/weatherapi"
+        cpu             = "1"
+        memory          = "1"
 
-#   ip_address_type     = "public"
-#   dns_name_label      = "binarythistlewa"
-#   os_type             = "Linux"
-
-#   container {
-#       name            = "weatherapi"
-#       image           = "binarythistle/weatherapi"
-#         cpu             = "1"
-#         memory          = "1"
-
-#         ports {
-#             port        = 80
-#             protocol    = "TCP"
-#         }
-#   }
-# }
+        ports {
+            port        = 80
+            protocol    = "TCP"
+        }
+  }
+}
